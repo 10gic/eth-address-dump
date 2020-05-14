@@ -1,5 +1,5 @@
 """eth-address-dump.
-A utility for dump eth address from mnemonic words or private key.
+A utility for dump eth address from mnemonic words or private key or public key.
 """
 from .eth_address_dump import main_entry
 

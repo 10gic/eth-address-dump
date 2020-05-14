@@ -12,12 +12,12 @@ requirements = [
 
 setup(
     name='eth-address-dump',
-    version='0.1.5',
+    version='0.1.6',
     author='cig01',
     author_email='juhani AT 163.com',
     url='https://github.com/10gic/eth-address-dump',
     license='MIT License',
-    description='A utility for dump ethereum address from mnemonic words or private key',
+    description='A utility for dump eth address from mnemonic words or private key or public key',
     long_description=open('README.rst').read(),
     install_requires=["pysha3", "ecdsa", "base58"],
     python_requires='>=3',

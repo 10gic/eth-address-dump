@@ -162,19 +162,23 @@ def mnemonic_to_private_key(mnemonic, str_derivation_path=LEDGER_ETH_DERIVATION_
     return private_key
 
 
-def private_key_to_address(private_key):
+def private_key_to_public_key(private_key):
     key = ecdsa.SigningKey.from_string(private_key, curve=SECP256k1)
     public_key = key.get_verifying_key().to_string()
+    return public_key
+
+
+def public_key_to_address(public_key):
     keccak = keccak_256()
     keccak.update(public_key)
     address = keccak.hexdigest()[24:]
-    return checksum_encode(address)
+    return address
 
 
 def checksum_encode(address):
-    keccak = keccak_256()
     out = ''
     addr = address.lower().replace('0x', '')
+    keccak = keccak_256()
     keccak.update(addr.encode('ascii'))
     hash_addr = keccak.hexdigest()
     for i, c in enumerate(addr):
@@ -185,29 +189,87 @@ def checksum_encode(address):
     return out
 
 
+def decompress_public_key(compressed_public_key):
+    # modulo p which is defined by secp256k1's spec
+    p = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F
+    x = int.from_bytes(compressed_public_key[1:33], byteorder='big')
+    y_sq = (pow(x, 3, p) + 7) % p
+    y = pow(y_sq, (p + 1) // 4, p)
+    if compressed_public_key[0] % 2 != y % 2:
+        y = p - y
+    y = y.to_bytes(32, byteorder='big')
+    return compressed_public_key[1:33] + y  # x + y
+
+
+def compress_public_key(public_key):
+    # Compressed public key is:
+    # 0x02 + x - coordinate if y is even
+    # 0x03 + x - coordinate if y is odd
+    x = int.from_bytes(public_key[0:32], byteorder='big')
+    y = int.from_bytes(public_key[31:64], byteorder='big')
+    parity = y & 1
+    compressed_public_key = (2 + parity).to_bytes(1, byteorder='big') + x.to_bytes(32, byteorder='big')
+    return compressed_public_key
+
+
 def main_entry(argv):
+    mnemonic = ''
     private_key = ''
+    public_key = ''
+    compressed_public_key = ''
 
     input_content = ' '.join(sys.stdin.read().split('\n')).rstrip().lstrip()
-    if re.search("^([a-zA-Z]+\s){11}([a-zA-Z]+).*$", input_content): # 12 mnemonic words
+    if re.search("^([a-zA-Z]+\\s){11}([a-zA-Z]+).*$", input_content):
+        # 12 mnemonic words
         # For example: olympic wine chicken argue unaware bundle tunnel grid spider slot spell need
+        sys.stderr.write("you input mnemonic\n")
         mnemonic = input_content
         private_key = mnemonic_to_private_key(mnemonic)
-    elif len(input_content) == 66 and input_content.startswith("0x"):
+        public_key = private_key_to_public_key(private_key)
+        compressed_public_key = compress_public_key(public_key)
+        address = public_key_to_address(public_key)
+    elif (len(input_content) == 66 and input_content.startswith("0x")) or len(input_content) == 64:
+        sys.stderr.write("you input private key\n")
+        # private key
         # For example: 0x6ee825aafad19a0d759e1e0ba61d0c523b7b23038998a92d7904458b91667105
-        private_key_hex = input_content[2:]
-        private_key = bytearray.fromhex(private_key_hex)
-    elif len(input_content) == 64:
         # For example: 6ee825aafad19a0d759e1e0ba61d0c523b7b23038998a92d7904458b91667105
-        private_key_hex = input_content
+        private_key_hex = input_content.lower().replace('0x', '')
         private_key = bytearray.fromhex(private_key_hex)
+        public_key = private_key_to_public_key(private_key)
+        compressed_public_key = compress_public_key(public_key)
+        address = public_key_to_address(public_key)
+    elif (len(input_content) == 130 and input_content.startswith("0x")) or len(input_content) == 128:
+        sys.stderr.write("you input public key\n")
+        # public key
+        # For example: 0xaa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9fe85fc162e43d721533736d79c102139d3035d2d9251ccf809bc5bddb81cc6563
+        # For example: aa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9fe85fc162e43d721533736d79c102139d3035d2d9251ccf809bc5bddb81cc6563
+        public_key_hex = input_content.lower().replace('0x', '')
+        public_key = bytearray.fromhex(public_key_hex)
+        compressed_public_key = compress_public_key(public_key)
+        address = public_key_to_address(public_key)
+    elif (len(input_content) == 68 and input_content.startswith("0x")) or len(input_content) == 66:
+        sys.stderr.write("you input compressed public key\n")
+        # compressed public key
+        # For example: 0x03aa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9f
+        # For example: 03aa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9f
+        compressed_public_key_hex = input_content.lower().replace('0x', '')
+        compressed_public_key = bytearray.fromhex(compressed_public_key_hex)
+        public_key = decompress_public_key(compressed_public_key)
+        address = public_key_to_address(public_key)
     else:
-        print("invalid input")
+        sys.stderr.write("invalid input\n")
         sys.exit(1)
 
-    address = private_key_to_address(private_key)
-    print("private_key = 0x{}".format(str(binascii.hexlify(private_key), 'utf-8')))
-    print("address = 0x{}".format(address))
+    if mnemonic:
+        print("mnemonic = {}".format(mnemonic))
+    if private_key:
+        print("private_key = 0x{}".format(str(binascii.hexlify(private_key), 'utf-8')))
+    if public_key:
+        print("public_key = 0x{}".format(str(binascii.hexlify(public_key), 'utf-8')))
+    if compressed_public_key:
+        print("compressed_public_key = 0x{}".format(str(binascii.hexlify(compressed_public_key), 'utf-8')))
+    if address:
+        print("address = 0x{}".format(checksum_encode(address)))
 
 
 if __name__ == '__main__':
