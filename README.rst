@@ -16,6 +16,7 @@ Dump eth address from mnemonic words::
   public_key = 0xaa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9fe85fc162e43d721533736d79c102139d3035d2d9251ccf809bc5bddb81cc6563
   compressed_public_key = 0x03aa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9f
   address = 0xF7dcf60AebA077461862d51b77d6d804C06E0073
+  nonce_zero_contract_address = 0xE861cA8695fEF51Da017D0187bA8C83D22de6708
 
 Dump eth address from private key::
 
@@ -24,6 +25,7 @@ Dump eth address from private key::
   public_key = 0xaa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9fe85fc162e43d721533736d79c102139d3035d2d9251ccf809bc5bddb81cc6563
   compressed_public_key = 0x03aa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9f
   address = 0xF7dcf60AebA077461862d51b77d6d804C06E0073
+  nonce_zero_contract_address = 0xE861cA8695fEF51Da017D0187bA8C83D22de6708
 
 Dump eth address from public key::
 
@@ -31,6 +33,7 @@ Dump eth address from public key::
   public_key = 0xaa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9fe85fc162e43d721533736d79c102139d3035d2d9251ccf809bc5bddb81cc6563
   compressed_public_key = 0x03aa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9f
   address = 0xF7dcf60AebA077461862d51b77d6d804C06E0073
+  nonce_zero_contract_address = 0xE861cA8695fEF51Da017D0187bA8C83D22de6708
 
 Dump eth address from compressed public key::
 
@@ -38,6 +41,7 @@ Dump eth address from compressed public key::
   public_key = 0xaa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9fe85fc162e43d721533736d79c102139d3035d2d9251ccf809bc5bddb81cc6563
   compressed_public_key = 0x03aa3e0b3f86053c2aaa08d6f6398e18f76100e0d675680228b000c252e4393e9f
   address = 0xF7dcf60AebA077461862d51b77d6d804C06E0073
+  nonce_zero_contract_address = 0xE861cA8695fEF51Da017D0187bA8C83D22de6708
 
 Dump checksum encoded address from all lowercase address::
 
