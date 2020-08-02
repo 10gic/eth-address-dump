@@ -12,7 +12,7 @@ requirements = [
 
 setup(
     name='eth-address-dump',
-    version='0.1.7',
+    version='0.1.8',
     author='cig01',
     author_email='juhani AT 163.com',
     url='https://github.com/10gic/eth-address-dump',

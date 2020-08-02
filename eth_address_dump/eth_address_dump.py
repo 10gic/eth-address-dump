@@ -22,7 +22,7 @@ BIP39_PBKDF2_ROUNDS = 2048
 BIP39_SALT_MODIFIER = "mnemonic"
 BIP32_PRIVDEV = 0x80000000
 BIP32_CURVE = SECP256k1
-BIP32_SEED_MODIFIER = b'Eth seed'  # b'Bitcoin seed'
+BIP32_SEED_MODIFIER = b'Bitcoin seed'  # https://en.bitcoin.it/wiki/BIP_0032
 
 LEDGER_ETH_DERIVATION_PATH = "m/44'/60'/0'/0/0"   # BTC: m/44'/0'/0'/0/0
 # bip44 define 5 levels in BIP32 path: m / purpose' / coin_type' / account' / change / address_index
