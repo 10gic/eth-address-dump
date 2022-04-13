@@ -12,9 +12,8 @@ requirements = [
 
 setup(
     name='eth-address-dump',
-    version='0.1.8',
+    version='0.1.9',
     author='cig01',
-    author_email='juhani AT 163.com',
     url='https://github.com/10gic/eth-address-dump',
     license='MIT License',
     description='A utility for dump eth address from mnemonic words or private key or public key',

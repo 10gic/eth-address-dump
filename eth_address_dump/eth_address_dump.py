@@ -53,8 +53,8 @@ def derive_public_key(private_key):
         Logic adapted from https://github.com/satoshilabs/slips/blob/master/slip-0010/testvectors.py. """
 
     Q = int.from_bytes(private_key, byteorder='big') * BIP32_CURVE.generator
-    xstr = Q.x().to_bytes(32, byteorder='big')
-    parity = Q.y() & 1
+    xstr = int(Q.x()).to_bytes(32, byteorder='big')
+    parity = int(Q.y()) & 1
     return (2 + parity).to_bytes(1, byteorder='big') + xstr
 
 
@@ -75,7 +75,7 @@ def derive_bip32childkey(parent_key, parent_chain_code, i):
         key, chain_code = h[:32], h[32:]
         a = int.from_bytes(key, byteorder='big')
         b = int.from_bytes(parent_key, byteorder='big')
-        key = (a + b) % BIP32_CURVE.order
+        key = int((a + b) % BIP32_CURVE.order)
         if a < BIP32_CURVE.order and key != 0:
             key = key.to_bytes(32, byteorder='big')
             break
